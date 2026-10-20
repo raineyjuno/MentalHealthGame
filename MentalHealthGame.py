@@ -4,6 +4,14 @@ import random
 database=sqlite3.connect("MentalHealthGame.db")
 cursor=database.cursor()
 
+class character:
+    def __init__(self, id, name, difficulty, health, attack):
+        self.id=id
+        self.name=name
+        self.difficulty=difficulty
+        self.health=health
+        self.attack=attack
+
 def get_integer_input(min_input, max_input):
     user_input=-1
     while user_input<min_input or user_input>max_input:
@@ -42,3 +50,7 @@ for i in range(len(character_results)):
     print(f"Attack power: {character_results[i][4]}")
 print("Please select a character")
 character_reference_id=get_integer_input(1,len(character_results))
+chosen_character=character(character_results[character_reference_id-1][0],character_results[character_reference_id-1][1],
+                           character_results[character_reference_id-1][2],character_results[character_reference_id-1][3],
+                           character_results[character_reference_id-1][4])
+print(chosen_character.name)
