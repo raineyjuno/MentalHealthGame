@@ -42,3 +42,7 @@ for i in range(len(character_results)):
     print(f"Attack power: {character_results[i][4]}")
 print("Please select a character")
 character_reference_id=get_integer_input(1,len(character_results))
+character_id=character_results[character_reference_id-1][0]
+cursor.execute(f"SELECT name FROM CHARACTER WHERE id={character_id}")
+character=cursor.fetchall()
+print(character[0][0])
