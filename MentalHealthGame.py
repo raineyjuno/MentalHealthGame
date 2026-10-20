@@ -102,4 +102,46 @@ while defeated_symptoms<5:
             health_boost=management[0][5]
             attack_boost=management[0][5]
             print(f"You have received a boost of {management[0][5]} to your health and your attack")
+    input("Press input to enter the fight ")
+
+    os.system("cls")
+    cursor.execute(f"""SELECT SYMPTOM.name, ILLNESS_SYMPTOM.*
+                    FROM SYMPTOM, ILLNESS_SYMPTOM
+                    WHERE ILLNESS_SYMPTOM.illness_id={chosen_illness_id}
+                    AND ILLNESS_SYMPTOM.difficulty_ranking={defeated_symptoms+1}
+                    AND SYMPTOM.id=ILLNESS_SYMPTOM.symptom_id""")
+    symptom=cursor.fetchall()
+    print(f"You are now going to fight {symptom[0][0]}")
+    print(f"It has {symptom[0][4]} health points and {symptom[0][5]} attack power")
+    damage_done=0
+    damage_taken=0
+    while damage_taken<chosen_character.health+health_boost:
+        print(f"You have {chosen_character.health+health_boost-damage_taken} health points remaining")
+        input(f"Press enter to hit for {chosen_character.attack+attack_boost} points")
+        damage_done+=chosen_character.attack+attack_boost
+        if damage_done>=symptom[0][4]:
+            break
+        print(f"You dealt {chosen_character.attack+attack_boost} damage and it now has {symptom[0][4]-damage_done} health")
+        damage_taken+=symptom[0][5]
+        print(f"It hits back for {symptom[0][5]} points")
+    if damage_taken>=chosen_character.health+health_boost:
+        print("")
+        print("Unforunately you have been bested")
+        print("Your boosts will be removed and you will restart this day in order to try again")
+        input("Press enter to try again ")
+    else:
+        print("")
+        print(f"Congratulations, you have bested {symptom[0][0]}!")
+        print(f"You can choose to take a boost of {symptom[0][4]//2} to your health or {symptom[0][5]//2} to your attack")
+        boost_choice=""
+        while boost_choice.lower()!="h" and boost_choice.lower()!="a":
+            boost_choice=input("Please enter h for health or a for attack: ")
+        if boost_choice.lower()=="h":
+            chosen_character.health+=symptom[0][4]//2
+        else:
+            chosen_character.attack+=symptom[0][5]//2
+        chosen_character.health+=health_boost
+        chosen_character.attack+=attack_boost
+        print("Your boosts have been added to your character stats")
+        input("Press enter to begin the next day ")
     break
