@@ -4,6 +4,16 @@ import random
 database=sqlite3.connect("MentalHealthGame.db")
 cursor=database.cursor()
 
+def get_integer_input(min_input, max_input):
+    user_input=-1
+    while user_input<min_input or user_input>max_input:
+        user_input=input(f"Please enter an integer between {min_input} and {max_input}: ")
+        try:
+            user_input=int(user_input)
+        except:
+            user_input=-1
+    return user_input
+
 print("Welcome to the Mental Health Sanctuary")
 print("A game designed to help you learn all about mental illnesses")
 print("What they are, how they present, and how to combat them all through a fantasy fighter game")
@@ -16,4 +26,5 @@ cursor.execute("SELECT * FROM ILLNESS")
 results=cursor.fetchall()
 for i in results:
     print(str(i[0])+'.', i[1])
-chosen_illness_id=input(f"Select an illness to play through by typing a number 1 through {len(results)}: ")
+print("Please select an illness for this playthrough")
+chosen_illness_id=get_integer_input(1,len(results))
