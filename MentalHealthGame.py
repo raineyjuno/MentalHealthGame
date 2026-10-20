@@ -64,3 +64,42 @@ print("They say that you were lucky to make it out alive, but it won't stop comi
 print("You need to defeat it, and you can if you break it up into smaller fights, but first you need to rest")
 print("We'll tackle this when you're feeling better")
 input("Press enter to continue ")
+
+os.system("cls")
+print(f"{chosen_character.name}, it's time to start fighting")
+print("Everyday you will fight the most manageable part of this creature that you haven't yet defeated")
+print("Before each fight I will offer you a treatment that you can choose to take for a mystery boost")
+print("If you lose the fight you will restart the day and lose your boost, but if you win you learn to manage the symptom and gain a boost")
+print("There are 5 levels, and once you overcome all of them you win the game")
+input("Press enter to continue ")
+
+defeated_symptoms=0
+while defeated_symptoms<5:
+    os.system("cls")
+    print(f"Day {defeated_symptoms+1}")
+    print(f"Your starting stats are {chosen_character.health} health points and {chosen_character.attack} attack power")
+    cursor.execute(f"""SELECT MANAGEMENT.name, ILLNESS_MANAGEMENT.* 
+                    FROM MANAGEMENT, ILLNESS_MANAGEMENT 
+                    WHERE ILLNESS_MANAGEMENT.illness_id={chosen_illness_id} 
+                    AND ILLNESS_MANAGEMENT.effectivity_ranking={defeated_symptoms+1} 
+                    AND MANAGEMENT.id=ILLNESS_MANAGEMENT.management_id""")
+    management=cursor.fetchall()
+    print(f"Hello {chosen_character.name}, today I offer you {management[0][0]}")
+    print("Would you like to try it?")
+    management_choice=""
+    while management_choice.lower()!="y" and management_choice.lower()!="n":
+        management_choice=input("Please enter y for yes or n for no: ")
+    health_boost=0
+    attack_boost=0
+    if management_choice.lower()=="y":
+        if management[0][4].lower()=="health":
+            health_boost=management[0][5]
+            print(f"You have received a boost of {management[0][5]} to your health")
+        elif management[0][4].lower()=="attack":
+            attack_boost=management[0][5]
+            print(f"You have received a boost of {management[0][5]} to your attack")
+        else:
+            health_boost=management[0][5]
+            attack_boost=management[0][5]
+            print(f"You have received a boost of {management[0][5]} to your health and your attack")
+    break
