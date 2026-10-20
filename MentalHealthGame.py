@@ -42,3 +42,8 @@ for i in range(len(character_results)):
     print(f"Attack power: {character_results[i][4]}")
 print("Please select a character")
 character_reference_id=get_integer_input(1,len(character_results))
+character_name=character_results[character_reference_id-1][1]
+character_difficulty=character_results[character_reference_id-1][2]
+character_health=character_results[character_reference_id-1][3]
+character_attack=character_results[character_reference_id-1][4]
+print(character_name)
