@@ -153,10 +153,18 @@ print("You ask if you're done, if it's finally gone, and they shake their head a
 print("Not gone, they tell you, you just know how to live with it now")
 input("Press enter to finish the game ")
 os.system("cls")
-print(f"Congratulations! You have learnt how to deal with {chosen_illness_name}!")
+print(f"Congratulations! You have learnt some strategies to deal with {chosen_illness_name}!")
 print("You now get to immortalise your initials in the scoreboard!")
 users_initials=""
 while len(users_initials)!=2:
     users_initials=input("Please enter 2 characters to represent you on the scoreboard: ")
 cursor.execute(f"INSERT INTO SCOREBOARD (name_of_player, illness_id, character_id) VALUES ('{users_initials}',{chosen_illness_id},{chosen_character.id})")
 database.commit()
+cursor.execute(f"""SELECT SCOREBOARD.name_of_player, ILLNESS.name, CHARACTER.name
+                FROM SCOREBOARD, ILLNESS, CHARACTER
+                WHERE ILLNESS.id=SCOREBOARD.illness_id
+                AND CHARACTER.id=SCOREBOARD.character_id""")
+scoreboard=cursor.fetchall()
+os.system("cls")
+for entry in scoreboard:
+    print(f"{entry[0]} successfully played through {entry[1]} with {entry[2]}")
