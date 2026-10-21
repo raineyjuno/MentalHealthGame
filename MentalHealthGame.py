@@ -96,7 +96,7 @@ cursor.execute(f"""SELECT MANAGEMENT.name, ILLNESS_MANAGEMENT.*
 all_management_info=cursor.fetchall()
 all_managements=[]
 for i in range(len(all_management_info)):
-    all_managements.append(management(all_managements[i][0],1,all_managements[i][4],all_managements[i][5]))
+    all_managements.append(management(all_management_info[i][0],1,all_management_info[i][4],all_management_info[i][5]))
 while defeated_symptoms<5:
     os.system("cls")
     print(f"Day {defeated_symptoms+1}")
