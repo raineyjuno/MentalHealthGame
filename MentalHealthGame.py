@@ -68,7 +68,7 @@ input("Press enter to continue ")
 os.system("cls")
 print(f"{chosen_character.name}, it's time to start fighting")
 print("Everyday you will fight the most manageable part of this creature that you haven't yet defeated")
-print("Before each fight I will offer you a treatment that you can choose to take for a mystery boost")
+print("Before each fight I will offer you a management tool that you can choose to use for a mystery boost")
 print("If you lose the fight you will restart the day and lose your boost, but if you win you learn to manage the symptom and gain a boost")
 print("There are 5 levels, and once you overcome all of them you win the game")
 input("Press enter to continue ")
@@ -142,6 +142,21 @@ while defeated_symptoms<5:
             chosen_character.attack+=symptom[0][5]//2
         chosen_character.health+=health_boost
         chosen_character.attack+=attack_boost
+        defeated_symptoms+=1
         print("Your boosts have been added to your character stats")
         input("Press enter to begin the next day ")
-    break
+
+os.system("cls")
+print("You wake and your head feels clearer than it has in a long time")
+print("You look to your trainer, ready to be offered a management tool, but they shake their head")
+print("You ask if you're done, if it's finally gone, and they shake their head again")
+print("Not gone, they tell you, you just know how to live with it now")
+input("Press enter to finish the game ")
+os.system("cls")
+print(f"Congratulations! You have learnt how to deal with {chosen_illness_name}!")
+print("You now get to immortalise your initials in the scoreboard!")
+users_initials=""
+while len(users_initials)!=2:
+    users_initials=input("Please enter 2 characters to represent you on the scoreboard: ")
+cursor.execute(f"INSERT INTO SCOREBOARD (name_of_player, illness_id, character_id) VALUES ('{users_initials}',{chosen_illness_id},{chosen_character.id})")
+database.commit()
