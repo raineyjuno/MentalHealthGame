@@ -25,6 +25,12 @@ class management:
         self.effectivity=effectivity
         self.boost=boost
         self.value=value
+    def risky(self):
+        chance=random.randint(1,100)
+        if chance%2==0:
+            return self.value*2
+        else:
+            return self.value//3
 
 class symptom:
     def __init__(self, name, difficulty, health, attack):
@@ -119,13 +125,14 @@ while defeated_symptoms<5:
     print(f"Your starting stats are {chosen_character.health} health points and {chosen_character.attack} attack power")
     current_management=all_managements.queue[0]
     print(f"Hello {chosen_character.name}, today I offer you {current_management.name.lower()}")
-    print("Would you like to try it?")
-    management_choice=""
-    while management_choice.lower()!="y" and management_choice.lower()!="n":
-        management_choice=input("Please enter y for yes or n for no: ")
+    print("Would you like to: ")
+    print("1. Not try it")
+    print("2. Try it cautiously")
+    print("3. Try it riskily")
+    management_choice=get_integer_input(1,3)
     health_boost=0
     attack_boost=0
-    if management_choice.lower()=="y":
+    if management_choice==2:
         if current_management.boost.lower()=="health":
             health_boost=current_management.value
             print(f"You have received a boost of {current_management.value} to your health")
@@ -136,6 +143,18 @@ while defeated_symptoms<5:
             health_boost=current_management.value
             attack_boost=current_management.value
             print(f"You have received a boost of {current_management.value} to your health and your attack")
+    elif management_choice==3:
+        boost_value=current_management.risky()
+        if current_management.boost.lower()=="health":
+            health_boost=boost_value
+            print(f"You have received a boost of {boost_value} to your health")
+        elif current_management.boost.lower()=="attack":
+            attack_boost=boost_value
+            print(f"You have received a boost of {boost_value} to your attack")
+        else:
+            health_boost=boost_value
+            attack_boost=boost_value
+            print(f"You have received a boost of {boost_value} to your health and your attack")
     input("Press input to enter the fight ")
 
     os.system("cls")
