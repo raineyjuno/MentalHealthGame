@@ -12,6 +12,20 @@ class character:
         self.health=health
         self.attack=attack
 
+class management:
+    def __init__(self, name, effectivity, boost, value):
+        self.name=name
+        self.effectivity=effectivity
+        self.boost=boost
+        self.value=value
+
+class symptom:
+    def __init__(self, name, difficulty, health, attack):
+        self.name=name
+        self.difficulty=difficulty
+        self.health=health
+        self.attack=attack
+
 def get_integer_input(min_input, max_input):
     user_input=-1
     while user_input<min_input or user_input>max_input:
@@ -83,8 +97,9 @@ while defeated_symptoms<5:
                     WHERE ILLNESS_MANAGEMENT.illness_id={chosen_illness_id} 
                     AND ILLNESS_MANAGEMENT.effectivity_ranking={defeated_symptoms+1} 
                     AND MANAGEMENT.id=ILLNESS_MANAGEMENT.management_id""")
-    management=cursor.fetchall()
-    print(f"Hello {chosen_character.name}, today I offer you {management[0][0]}")
+    management_info=cursor.fetchall()
+    current_management=management(management_info[0][0],defeated_symptoms+1,management_info[0][4],management_info[0][5])
+    print(f"Hello {chosen_character.name}, today I offer you {current_management.name.lower()}")
     print("Would you like to try it?")
     management_choice=""
     while management_choice.lower()!="y" and management_choice.lower()!="n":
@@ -92,16 +107,16 @@ while defeated_symptoms<5:
     health_boost=0
     attack_boost=0
     if management_choice.lower()=="y":
-        if management[0][4].lower()=="health":
-            health_boost=management[0][5]
-            print(f"You have received a boost of {management[0][5]} to your health")
-        elif management[0][4].lower()=="attack":
-            attack_boost=management[0][5]
-            print(f"You have received a boost of {management[0][5]} to your attack")
+        if current_management.boost.lower()=="health":
+            health_boost=current_management.value
+            print(f"You have received a boost of {current_management.value} to your health")
+        elif current_management.boost.lower()=="attack":
+            attack_boost=current_management.value
+            print(f"You have received a boost of {current_management.value} to your attack")
         else:
-            health_boost=management[0][5]
-            attack_boost=management[0][5]
-            print(f"You have received a boost of {management[0][5]} to your health and your attack")
+            health_boost=current_management.value
+            attack_boost=current_management.value
+            print(f"You have received a boost of {current_management.value} to your health and your attack")
     input("Press input to enter the fight ")
 
     os.system("cls")
@@ -110,20 +125,21 @@ while defeated_symptoms<5:
                     WHERE ILLNESS_SYMPTOM.illness_id={chosen_illness_id}
                     AND ILLNESS_SYMPTOM.difficulty_ranking={defeated_symptoms+1}
                     AND SYMPTOM.id=ILLNESS_SYMPTOM.symptom_id""")
-    symptom=cursor.fetchall()
-    print(f"You are now going to fight {symptom[0][0]}")
-    print(f"It has {symptom[0][4]} health points and {symptom[0][5]} attack power")
+    symptom_info=cursor.fetchall()
+    current_symptom=symptom(symptom_info[0][0],defeated_symptoms+1,symptom_info[0][4],symptom_info[0][5])
+    print(f"You are now going to fight {current_symptom.name}")
+    print(f"It has {current_symptom.health} health points and {current_symptom.attack} attack power")
     damage_done=0
     damage_taken=0
     while damage_taken<chosen_character.health+health_boost:
         print(f"You have {chosen_character.health+health_boost-damage_taken} health points remaining")
         input(f"Press enter to hit for {chosen_character.attack+attack_boost} points")
         damage_done+=chosen_character.attack+attack_boost
-        if damage_done>=symptom[0][4]:
+        if damage_done>=current_symptom.health:
             break
-        print(f"You dealt {chosen_character.attack+attack_boost} damage and it now has {symptom[0][4]-damage_done} health")
-        damage_taken+=symptom[0][5]
-        print(f"It hits back for {symptom[0][5]} points")
+        print(f"You dealt {chosen_character.attack+attack_boost} damage and it now has {current_symptom.health-damage_done} health")
+        damage_taken+=current_symptom.attack
+        print(f"It hits back for {current_symptom.attack} points")
     if damage_taken>=chosen_character.health+health_boost:
         print("")
         print("Unforunately you have been bested")
@@ -131,15 +147,15 @@ while defeated_symptoms<5:
         input("Press enter to try again ")
     else:
         print("")
-        print(f"Congratulations, you have bested {symptom[0][0]}!")
-        print(f"You can choose to take a boost of {symptom[0][4]//2} to your health or {symptom[0][5]//2} to your attack")
+        print(f"Congratulations, you have learnt to manage {current_symptom.name}")
+        print(f"You can choose to take a boost of {current_symptom.health//2} to your health or {current_symptom.attack//2} to your attack")
         boost_choice=""
         while boost_choice.lower()!="h" and boost_choice.lower()!="a":
             boost_choice=input("Please enter h for health or a for attack: ")
         if boost_choice.lower()=="h":
-            chosen_character.health+=symptom[0][4]//2
+            chosen_character.health+=current_symptom.health//2
         else:
-            chosen_character.attack+=symptom[0][5]//2
+            chosen_character.attack+=current_symptom.attack//2
         chosen_character.health+=health_boost
         chosen_character.attack+=attack_boost
         defeated_symptoms+=1
@@ -153,7 +169,7 @@ print("You ask if you're done, if it's finally gone, and they shake their head a
 print("Not gone, they tell you, you just know how to live with it now")
 input("Press enter to finish the game ")
 os.system("cls")
-print(f"Congratulations! You have learnt some strategies to deal with {chosen_illness_name}!")
+print(f"Congratulations! You have learnt some strategies to deal with {chosen_illness_name}")
 print("You now get to immortalise your initials in the scoreboard!")
 users_initials=""
 while len(users_initials)!=2:
