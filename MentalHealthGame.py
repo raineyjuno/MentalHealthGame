@@ -14,10 +14,10 @@ class character:
         self.attack=attack
     def risky(self, boost):
         chance=random.randint(1,100)
-        if chance%2==0:
-            return (self.attack+boost)*2
-        else:
+        if chance%3==0:
             return (self.attack+boost)//2
+        else:
+            return (self.attack+boost)*2
 
 class management:
     def __init__(self, name, effectivity, boost, value):
@@ -27,7 +27,7 @@ class management:
         self.value=value
     def risky(self):
         chance=random.randint(1,100)
-        if chance%2==0:
+        if chance%3==0:
             return self.value*2
         else:
             return self.value//3
@@ -95,7 +95,9 @@ input("Press enter to continue ")
 os.system("cls")
 print(f"{chosen_character.name}, it's time to start fighting")
 print("Everyday you will fight the most manageable part of this creature that you haven't yet defeated")
-print("Before each fight I will offer you a management tool that you can choose to use for a mystery boost")
+print("Before each fight I will offer you a management tool that you can choose to use cautiously for a mystery boost")
+print("If you use it riskily the boost could double, but it also could halve")
+print("Your attacks also have a safe option with a definite value, and a risky option that can double it or halve it")
 print("If you lose the fight you will restart the day and lose your boost, but if you win you learn to manage the symptom and gain a boost")
 print("There are 5 levels, and once you overcome all of them you win the game")
 input("Press enter to continue ")
@@ -164,7 +166,7 @@ while defeated_symptoms<5:
     damage_done=0
     damage_taken=0
     while damage_taken<chosen_character.health+health_boost:
-        print(f"You have {chosen_character.health+health_boost-damage_taken} health points remaining")
+        print(f"You have {chosen_character.health+health_boost-damage_taken} health points remaining and {chosen_character.attack+attack_boost} attack points")
         print("It's time to strike. You can:")
         print("1. Take a safe hit")
         print("2. Take a risky hit")
