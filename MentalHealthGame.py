@@ -12,6 +12,12 @@ class character:
         self.difficulty=difficulty
         self.health=health
         self.attack=attack
+    def risky(self, boost):
+        chance=random.randint(1,100)
+        if chance%2==0:
+            return (self.attack+boost)*2
+        else:
+            return (self.attack+boost)//2
 
 class management:
     def __init__(self, name, effectivity, boost, value):
@@ -140,11 +146,19 @@ while defeated_symptoms<5:
     damage_taken=0
     while damage_taken<chosen_character.health+health_boost:
         print(f"You have {chosen_character.health+health_boost-damage_taken} health points remaining")
-        input(f"Press enter to hit for {chosen_character.attack+attack_boost} points")
-        damage_done+=chosen_character.attack+attack_boost
+        print("It's time to strike. You can:")
+        print("1. Take a safe hit")
+        print("2. Take a risky hit")
+        fight_choice=get_integer_input(1,2)
+        current_damage=0
+        if fight_choice==1:
+            current_damage=chosen_character.attack+attack_boost
+        else:
+            current_damage=chosen_character.risky(attack_boost)
+        damage_done+=current_damage
         if damage_done>=current_symptom.health:
             break
-        print(f"You dealt {chosen_character.attack+attack_boost} damage and it now has {current_symptom.health-damage_done} health")
+        print(f"You dealt {current_damage} damage and it now has {current_symptom.health-damage_done} health")
         damage_taken+=current_symptom.attack
         print(f"It hits back for {current_symptom.attack} points")
     if damage_taken>=chosen_character.health+health_boost:
