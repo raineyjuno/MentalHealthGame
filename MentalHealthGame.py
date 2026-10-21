@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import random
+from queue import Queue
 database=sqlite3.connect("MentalHealthGame.db")
 cursor=database.cursor()
 
@@ -88,6 +89,16 @@ print("There are 5 levels, and once you overcome all of them you win the game")
 input("Press enter to continue ")
 
 defeated_symptoms=0
+cursor.execute(f"""SELECT MANAGEMENT.name, ILLNESS_MANAGEMENT.* 
+                    FROM MANAGEMENT, ILLNESS_MANAGEMENT 
+                    WHERE ILLNESS_MANAGEMENT.illness_id={chosen_illness_id}  
+                    AND MANAGEMENT.id=ILLNESS_MANAGEMENT.management_id
+                    ORDER BY ILLNESS_MANAGEMENT.effectivity_ranking""")
+all_management_info=cursor.fetchall()
+all_managements=Queue()
+for i in range(len(all_management_info)):
+    all_managements.put(management(all_management_info[i][0],1,all_management_info[i][4],all_management_info[i][5]))
+input()
 while defeated_symptoms<5:
     os.system("cls")
     print(f"Day {defeated_symptoms+1}")
