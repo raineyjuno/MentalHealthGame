@@ -97,19 +97,21 @@ cursor.execute(f"""SELECT MANAGEMENT.name, ILLNESS_MANAGEMENT.*
 all_management_info=cursor.fetchall()
 all_managements=Queue()
 for i in range(len(all_management_info)):
-    all_managements.put(management(all_management_info[i][0],1,all_management_info[i][4],all_management_info[i][5]))
-input()
+    all_managements.put(management(all_management_info[i][0],i+1,all_management_info[i][4],all_management_info[i][5]))
+cursor.execute(f"""SELECT SYMPTOM.name, ILLNESS_SYMPTOM.*
+                    FROM SYMPTOM, ILLNESS_SYMPTOM
+                    WHERE ILLNESS_SYMPTOM.illness_id={chosen_illness_id}
+                    AND SYMPTOM.id=ILLNESS_SYMPTOM.symptom_id
+                    ORDER BY ILLNESS_SYMPTOM.difficulty_ranking""")
+all_symptom_info=cursor.fetchall()
+all_symptoms=Queue()
+for i in range(len(all_symptom_info)):
+    all_symptoms.put(symptom(all_symptom_info[i][0],i+1,all_symptom_info[i][4],all_symptom_info[i][5]))
 while defeated_symptoms<5:
     os.system("cls")
     print(f"Day {defeated_symptoms+1}")
     print(f"Your starting stats are {chosen_character.health} health points and {chosen_character.attack} attack power")
-    cursor.execute(f"""SELECT MANAGEMENT.name, ILLNESS_MANAGEMENT.* 
-                    FROM MANAGEMENT, ILLNESS_MANAGEMENT 
-                    WHERE ILLNESS_MANAGEMENT.illness_id={chosen_illness_id} 
-                    AND ILLNESS_MANAGEMENT.effectivity_ranking={defeated_symptoms+1} 
-                    AND MANAGEMENT.id=ILLNESS_MANAGEMENT.management_id""")
-    management_info=cursor.fetchall()
-    current_management=management(management_info[0][0],defeated_symptoms+1,management_info[0][4],management_info[0][5])
+    current_management=all_managements.queue[0]
     print(f"Hello {chosen_character.name}, today I offer you {current_management.name.lower()}")
     print("Would you like to try it?")
     management_choice=""
@@ -131,13 +133,7 @@ while defeated_symptoms<5:
     input("Press input to enter the fight ")
 
     os.system("cls")
-    cursor.execute(f"""SELECT SYMPTOM.name, ILLNESS_SYMPTOM.*
-                    FROM SYMPTOM, ILLNESS_SYMPTOM
-                    WHERE ILLNESS_SYMPTOM.illness_id={chosen_illness_id}
-                    AND ILLNESS_SYMPTOM.difficulty_ranking={defeated_symptoms+1}
-                    AND SYMPTOM.id=ILLNESS_SYMPTOM.symptom_id""")
-    symptom_info=cursor.fetchall()
-    current_symptom=symptom(symptom_info[0][0],defeated_symptoms+1,symptom_info[0][4],symptom_info[0][5])
+    current_symptom=all_symptoms.queue[0]
     print(f"You are now going to fight {current_symptom.name}")
     print(f"It has {current_symptom.health} health points and {current_symptom.attack} attack power")
     damage_done=0
@@ -170,6 +166,8 @@ while defeated_symptoms<5:
         chosen_character.health+=health_boost
         chosen_character.attack+=attack_boost
         defeated_symptoms+=1
+        all_managements.get()
+        all_symptoms.get()
         print("Your boosts have been added to your character stats")
         input("Press enter to begin the next day ")
 
