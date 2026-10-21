@@ -140,7 +140,13 @@ while defeated_symptoms<5:
     damage_taken=0
     while damage_taken<chosen_character.health+health_boost:
         print(f"You have {chosen_character.health+health_boost-damage_taken} health points remaining")
-        input(f"Press enter to hit for {chosen_character.attack+attack_boost} points")
+        fight_choice=""
+        while fight_choice.lower()!="y" and fight_choice.lower()!="n":
+            fight_choice=input("Enter y to continue fighting or n to run away for a health boost: ")
+        if fight_choice.lower()=="n":
+            chosen_character.health+=3
+            damage_taken=chosen_character.health+health_boost
+            break
         damage_done+=chosen_character.attack+attack_boost
         if damage_done>=current_symptom.health:
             break
